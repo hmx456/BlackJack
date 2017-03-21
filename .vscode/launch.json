@@ -1,0 +1,43 @@
+{
+    "version": "1.4.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Electron Main",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+            },
+            "program": "${workspaceRoot}/main.js",
+            "protocol": "legacy"
+        },
+    {
+        "type": "extensionHost",
+        "request": "launch",
+        "name": "启动扩展",
+        "runtimeExecutable": "${execPath}",
+        "args": [
+            "--extensionDevelopmentPath=${workspaceRoot}"
+        ],
+        "sourceMaps": true,
+        "outFiles": [
+            "${workspaceRoot}/out/**/*.js"
+        ],
+        "preLaunchTask": "npm"
+    },
+        {
+            "name": "Creator Debug: Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:7456",
+            "sourceMaps": true,
+            "userDataDir": "${workspaceRoot}/.vscode/chrome",
+            "diagnosticLogging": false,
+            "sourceMapPathOverrides": {
+                "assets/*": "${workspaceRoot}/assets/*"
+            },
+            "webRoot": "${workspaceRoot}"
+        }
+    ]
+}
