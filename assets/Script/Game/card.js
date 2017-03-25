@@ -50,7 +50,7 @@ cc.Class({
         this.point.node.active = isFaceUp;
         this.suit.node.active = isFaceUp;
         this.mainPic.node.active = isFaceUp;
-        this.cardBG.spriteFrame = isFaceUp ? this.texFrontBG : this.texBackBG;
+        this.node.getComponent(cc.Sprite).spriteFrame = isFaceUp ? this.texFrontBG : this.texBackBG;
     },
 
     // use this for initialization
