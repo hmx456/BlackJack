@@ -1,3 +1,8 @@
+var Types = require('Types');
+var ActorPlayingState = Types.ActorPlayingState;
+var Utils = require('Utils');
+var Game = require('game');
+
 cc.Class({
     extends: cc.Component,
 
@@ -39,7 +44,8 @@ cc.Class({
         var photoIdx = playerInfo.photoIdx % 5;
         this.spPlayerPhoto.spriteFrame = this.playerFace[photoIdx];
         
-         this.cardInfo.active = false;
+        this.cardInfo.active = false;
+        this.TotalStake = playerInfo.gold;
 
         if (switchSide) {
             this.spCardInfo.getComponent('SideSwitcher').switchSide();
@@ -48,9 +54,13 @@ cc.Class({
     },
 
      updateTotalStake: function (num) {
+        this.TotalStake = num;
         this.labelTotalStake.string = '$' + num;
     },
 
+    getTotalStake: function(){
+        return this.TotalStake;
+    },
     //发牌
     onDeal: function(card,show){
         var card_ = cc.instantiate(this.cardPrefab);
@@ -80,6 +90,8 @@ cc.Class({
         //if(this.actor.state === ActorPlayingState.Normal) {
            // this.startCountdown();
         //}
+        if(this.actor.state === ActorPlayingState.Bust || this.actor.state === ActorPlayingState.Stand)
+            return;
         this.updatePoint();
     },
 
@@ -100,6 +112,46 @@ cc.Class({
 
     initDealer: function(){
          this.actor = this.getComponent('Actor');
+    },
+
+     onReset: function () {
+        this.cardInfo.active = false;
+
+        this.anchorCards.removeAllChildren();
+
+        //this._resetChips();
+    },
+
+    onRevealHoldCard: function () {
+        var card = cc.find('cardPrefab', this.anchorCards).getComponent('card');
+        card.reveal(true);
+        this.updateState();
+    },
+
+    updateState: function () {
+        switch (this.actor.state) {
+            case ActorPlayingState.Normal:
+                this.cardInfo.active = true;
+                //this.spCardInfo.spriteFrame = Game.instance.assetMng.texCardInfo;
+                this.updatePoint();
+                break;
+            case ActorPlayingState.Bust:
+                var min = Utils.getMinMaxPoint(this.actor.cards).min;
+                this.labelCardInfo.string = '爆牌(' + min + ')';
+                //this.spCardInfo.spriteFrame = Game.instance.assetMng.texBust;
+                this.cardInfo.active = true;
+                //this.animFX.show(true);
+                //this.animFX.playFX('bust');
+                //this.resetCountdown();
+                break;
+            case ActorPlayingState.Stand:
+                var max = Utils.getMinMaxPoint(this.actor.cards).max;
+                this.labelCardInfo.string = '停牌(' + max + ')';
+               // this.spCardInfo.spriteFrame = Game.instance.assetMng.texCardInfo;
+                //this.resetCountdown();
+                // this.updatePoint();
+                break;
+        }
     },
     // use this for initialization
     //onLoad: function () {

@@ -11,7 +11,7 @@ const players = [
 	},
 	{
 		name: '手机超人',
-		gold: 1500,
+		gold: 50000,
 		photoIdx: 2
 	},
 	{
